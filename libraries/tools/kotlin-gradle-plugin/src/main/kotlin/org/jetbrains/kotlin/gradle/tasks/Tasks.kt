@@ -56,6 +56,7 @@ import org.jetbrains.kotlin.gradle.utils.*
 import org.jetbrains.kotlin.gradle.utils.isParentOf
 import org.jetbrains.kotlin.gradle.utils.pathsAsStringRelativeTo
 import org.jetbrains.kotlin.incremental.ChangedFiles
+import org.jetbrains.kotlin.incremental.IncrementalCompilerRunner
 import org.jetbrains.kotlin.library.impl.isKotlinLibrary
 import org.jetbrains.kotlin.utils.JsLibraryUtils
 import java.io.File
@@ -249,6 +250,16 @@ abstract class AbstractKotlinCompile<T : CommonCompilerArguments> : AbstractKotl
     internal val moduleName: Property<String> = objects.property(String::class.java)
 
     @get:Internal
+    val abiSnapshotFile
+        get() = taskBuildDirectory.file(IncrementalCompilerRunner.ABI_SNAPSHOT_FILE_NAME)
+
+    @get:Input
+    val abiSnapshotRelativePath: Property<String> = objects.property(String::class.java).value(
+        //TODO update to support any jar changes
+        "$name/${IncrementalCompilerRunner.ABI_SNAPSHOT_FILE_NAME}"
+    )
+
+    @get:Internal
     internal val friendSourceSets = objects.listProperty(String::class.java)
 
     @get:Internal // takes part in the compiler arguments
@@ -281,10 +292,10 @@ abstract class AbstractKotlinCompile<T : CommonCompilerArguments> : AbstractKotl
         GradleCompileTaskProvider(this)
     }
 
-    @get:OutputDirectory
-    val kotlinBuildCacheDir: File by project.provider {
-        taskBuildDirectory
-    }
+//    @get:OutputDirectory
+//    val kotlinBuildCacheDir by project.provider {
+//        taskBuildDirectory
+//    }
 
     internal open fun compilerRunner(
         javaExecutable: File,
