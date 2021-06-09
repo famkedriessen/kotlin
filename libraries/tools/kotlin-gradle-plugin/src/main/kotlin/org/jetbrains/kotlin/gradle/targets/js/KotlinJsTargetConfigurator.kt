@@ -119,6 +119,32 @@ open class KotlinJsTargetConfigurator :
             isCanBeConsumed = true
             attributes.attribute<Usage>(Usage.USAGE_ATTRIBUTE, KotlinUsages.producerApiUsage(target))
             attributes.attribute(KotlinPlatformType.attribute, KotlinPlatformType.common)
+            attributes.attribute(KotlinJsCompilerAttribute.jsCompilerAttribute, KotlinJsCompilerAttribute.legacy)
+            setupAsPublicConfigurationIfSupported(target)
+            extendsFrom(target.project.configurations.getByName(target.apiElementsConfigurationName))
+        }
+    }
+
+    override fun configureSourceSet(target: KotlinTarget) {
+        super.configureSourceSet(target)
+        target.compilations.all { compilation ->
+            compilation.allKotlinSourceSets.forEach { sourceSet ->
+                listOf(
+                    sourceSet.apiMetadataConfigurationName,
+                    sourceSet.implementationMetadataConfigurationName,
+                    sourceSet.compileOnlyMetadataConfigurationName,
+                    sourceSet.runtimeOnlyMetadataConfigurationName
+                ).forEach { metadataName ->
+                    target.project.configurations.maybeCreate(metadataName).apply {
+                        target as KotlinJsTarget
+                        if (target.irTarget != null) {
+                            attributes.attribute(KotlinJsCompilerAttribute.jsCompilerAttribute, KotlinJsCompilerAttribute.ir)
+                        } else {
+                            attributes.attribute(KotlinJsCompilerAttribute.jsCompilerAttribute, KotlinJsCompilerAttribute.legacy)
+                        }
+                    }
+                }
+            }
         }
     }
 }

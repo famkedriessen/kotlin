@@ -254,7 +254,12 @@ abstract class AbstractKotlinTargetConfigurator<KotlinTargetType : KotlinTarget>
         }
     }
 
-    private fun addDependsOnTaskInOtherProjects(project: Project, taskProvider: TaskProvider<*>, useDependedOn: Boolean, configurationName: String) {
+    private fun addDependsOnTaskInOtherProjects(
+        project: Project,
+        taskProvider: TaskProvider<*>,
+        useDependedOn: Boolean,
+        configurationName: String
+    ) {
         val configuration = project.configurations.getByName(configurationName)
         taskProvider.configure { task ->
             task.dependsOn(configuration.getTaskDependencyFromProjectDependency(useDependedOn, taskProvider.name))
