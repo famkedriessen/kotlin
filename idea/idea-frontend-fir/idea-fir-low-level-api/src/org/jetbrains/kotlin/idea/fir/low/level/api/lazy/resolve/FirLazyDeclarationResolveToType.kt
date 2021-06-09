@@ -52,13 +52,19 @@ internal fun FirLazyDeclarationResolver.lazyResolveDeclaration(
             if (containingFile != null) {
                 moduleFileCache.firFileLockProvider.runCustomResolveUnderLock(containingFile, checkPCE) {
                     if (firDeclaration.returnTypeRef !is FirResolvedTypeRef) {
-                        val targetPhase =
-                            if (firDeclaration.returnTypeRef is FirImplicitTypeRef) FirResolvePhase.IMPLICIT_TYPES_BODY_RESOLVE
-                            else FirResolvePhase.TYPES
                         lazyResolveDeclaration(
                             firDeclarationToResolve = firDeclaration,
                             moduleFileCache = moduleFileCache,
-                            toPhase = targetPhase,
+                            toPhase = FirResolvePhase.TYPES,
+                            scopeSession = scopeSession,
+                            checkPCE = checkPCE,
+                        )
+                    }
+                    if (firDeclaration.returnTypeRef !is FirResolvedTypeRef) {
+                        lazyResolveDeclaration(
+                            firDeclarationToResolve = firDeclaration,
+                            moduleFileCache = moduleFileCache,
+                            toPhase = FirResolvePhase.IMPLICIT_TYPES_BODY_RESOLVE,
                             scopeSession = scopeSession,
                             checkPCE = checkPCE,
                         )

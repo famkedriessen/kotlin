@@ -221,7 +221,12 @@ internal class FirLazyDeclarationResolver(private val firFileBuilder: FirFileBui
         val designation = resolvableDeclaration.collectDesignation(containerFirFile)
         //TODO Should be synchronised
         val resolvePhase = designation.resolvePhaseForAllDeclarations(includeDeclarationPhase = declarationPhaseDowngraded)
-        val neededPhase = if (wasInLocalDeclaration) maxOf(FirResolvePhase.CONTRACTS, toPhase) else toPhase
+
+        val neededPhase = if (wasInLocalDeclaration) {
+            if (toPhase >= FirResolvePhase.CONTRACTS) FirResolvePhase.BODY_RESOLVE else maxOf(FirResolvePhase.CONTRACTS, toPhase)
+        } else toPhase
+
+//        val neededPhase = if (wasInLocalDeclaration) maxOf(FirResolvePhase.CONTRACTS, toPhase) else toPhase
         if (resolvePhase >= neededPhase) return
 
         moduleFileCache.firFileLockProvider.runCustomResolveUnderLock(containerFirFile, checkPCE) {
