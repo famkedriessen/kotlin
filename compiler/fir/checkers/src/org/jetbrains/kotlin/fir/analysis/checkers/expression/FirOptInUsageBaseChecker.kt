@@ -168,7 +168,11 @@ object FirOptInUsageBaseChecker {
                     Experimentality.Severity.WARNING -> FirErrors.EXPERIMENTAL_API_USAGE
                     Experimentality.Severity.ERROR -> FirErrors.EXPERIMENTAL_API_USAGE_ERROR
                 }
-                reporter.reportOn(element.source, diagnostic, annotationFqName, message ?: "", context)
+                val reportedMessage = message ?: when (severity) {
+                    Experimentality.Severity.WARNING -> "This declaration is experimental and its usage should be marked"
+                    Experimentality.Severity.ERROR -> "This declaration is experimental and its usage must be marked"
+                }
+                reporter.reportOn(element.source, diagnostic, annotationFqName, reportedMessage, context)
             }
         }
     }
