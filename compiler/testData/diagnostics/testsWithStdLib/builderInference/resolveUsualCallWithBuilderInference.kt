@@ -1,6 +1,8 @@
 // FIR_IDENTICAL
 // !LANGUAGE: +UnrestrictedBuilderInference
 // !DIAGNOSTICS: -UNUSED_PARAMETER
+// ALLOW_KOTLIN_PACKAGE
+
 // FILE: annotation.kt
 
 package kotlin
@@ -13,12 +15,12 @@ class Builder<T> {
     fun add(t: T) {}
 }
 
-fun <S> build(@<!EXPERIMENTAL_API_USAGE_ERROR!>BuilderInference<!> g: Builder<S>.() -> Unit): List<S> = TODO()
+fun <S> build(@BuilderInference g: Builder<S>.() -> Unit): List<S> = TODO()
 fun <S> wrongBuild(g: Builder<S>.() -> Unit): List<S> = TODO()
 
 fun <S> Builder<S>.extensionAdd(s: S) {}
 
-@<!EXPERIMENTAL_API_USAGE_ERROR!>BuilderInference<!>
+@BuilderInference
 fun <S> Builder<S>.safeExtensionAdd(s: S) {}
 
 val member = build {
