@@ -1,19 +1,10 @@
-// IGNORE_BACKEND: WASM
-// WASM_MUTE_REASON: SAM_CONVERSIONS
-
-// CHECK_BYTECODE_TEXT
-// 1 java/lang/invoke/LambdaMetafactory
+// SKIP_KT_DUMP
 
 abstract class BaseClass
 interface BaseInterface
 
 class ConcreteType : BaseClass(), BaseInterface
 class ConcreteType2 : BaseClass(), BaseInterface
-
-fun box(): String {
-    example(0)
-    return "OK"
-}
 
 fun example(input: Int) {
     val instance = when (input) {
@@ -28,10 +19,7 @@ fun example(input: Int) {
 fun functionReference(x: Any) {}
 
 class GenericHolder<T> {
-    fun doOnSuccess(onSuccess: Consumer<in T>) {
-        onSuccess.accept(object : BaseClass() {} as T)
-        onSuccess.accept(object : BaseInterface {} as T)
-    }
+    fun doOnSuccess(onSuccess: Consumer<in T>) {}
 }
 
 fun interface Consumer<T> {

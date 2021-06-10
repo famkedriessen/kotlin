@@ -2,7 +2,7 @@
 // WASM_MUTE_REASON: SAM_CONVERSIONS
 
 // CHECK_BYTECODE_TEXT
-// 0 java/lang/invoke/LambdaMetafactory
+// 1 java/lang/invoke/LambdaMetafactory
 
 interface Top
 interface Unrelated
@@ -10,8 +10,10 @@ interface Unrelated
 interface A : Top, Unrelated
 interface B : Top, Unrelated
 
+val flag = 0
+
 fun box(): String {
-    val g = when ("".length) {
+    val g = when (flag) {
         0 -> G<A>()
         else -> G<B>()
     }
@@ -26,6 +28,7 @@ fun functionReference(x: Any) {}
 class G<T : Top> {
     fun check(x: IFoo<in T>) {
         x.accept(object : A {} as T)
+        x.accept(object : B {} as T)
     }
 }
 
