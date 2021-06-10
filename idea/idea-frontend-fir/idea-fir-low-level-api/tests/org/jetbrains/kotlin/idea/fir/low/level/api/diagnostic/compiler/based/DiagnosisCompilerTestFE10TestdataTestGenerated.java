@@ -30136,6 +30136,11 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
                 runTest("compiler/testData/diagnostics/testsWithStdLib/experimental/experimentalOnWholeModule.kt");
             }
 
+            @TestMetadata("experimentalSetter.kt")
+            public void testExperimentalSetter() throws Exception {
+                runTest("compiler/testData/diagnostics/testsWithStdLib/experimental/experimentalSetter.kt");
+            }
+
             @TestMetadata("fullFqNameUsage.kt")
             public void testFullFqNameUsage() throws Exception {
                 runTest("compiler/testData/diagnostics/testsWithStdLib/experimental/fullFqNameUsage.kt");
